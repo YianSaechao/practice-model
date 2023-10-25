@@ -22,11 +22,14 @@ app.use(helmet());
 
 // START ROUTES //
 
-
-// find   - finds everything
-// .find()
- 
-// findById
+app.post('/create', async (req, res) =>{
+    try {
+        const newBook = await Book.create(req.body);
+        res.status(201).json(newBook);
+    } catch (error) {
+        res.status(500).json({error: 'Error creating the book'});
+    }
+});
 
 // insertMany
 app.post('/books', async (req, res) => {
@@ -37,7 +40,44 @@ app.post('/books', async (req, res) => {
     res.send(dbResponse);
 })
 
-// findOne
+app.put('/findOneAndReplace/:id', (req, res)=> {
+    try {
+        const replaceBook = Book.findOneAndReplace({_id: req.params.id}, req.body);
+        res.json(replaceBook);
+    } catch (error) {
+        res.status(500).json({error: 'Error replacing the book'})
+    }
+})
+
+
+
+app.put('/findOneAndUpdate/:id', async (req, res)=>{
+    try {
+        const updatedBook = await Book.findOneAndUpdate({_id: req.params.id}, req.body);
+        res.json(updatedBook);
+    } catch (error){
+        res.status(500).json({error: "Error updating the book"})
+    }
+})
+
+app.get('/find', (req, res)=>{
+    try {
+        const books = Book.find(req.query);
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({error: 'Error finding books'});
+    }
+})
+
+ app.get('/findById/:id', (req, res)=>{
+    try {
+        const book = Book.findById(req.params.id);
+        res.json(book)
+    } catch (error) {
+        res.status(500).json({error: 'Error finding the book'})
+    }
+ })
+// 
 
 // END ROUTES //
 
